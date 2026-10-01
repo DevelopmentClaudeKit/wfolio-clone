@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { getCurrentUser } from "@/lib/auth";
@@ -46,7 +46,6 @@ export async function POST(req: Request, ctx: RouteContext<"/api/projects/[id]/u
       storageKey: "",
       mime: type,
       sizeBytes: size,
-      position: sql`(select coalesce(max(position), 0) + 1 from files where project_id = ${project.id})`,
     })
     .returning();
   const key = fileKeys(user.id, project.id, file.id).original;

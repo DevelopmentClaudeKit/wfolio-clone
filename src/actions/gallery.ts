@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { verifyPassword } from "@/lib/auth";
+import { appUrl } from "@/lib/env";
 import { getClientListId, grantGalleryAccess, hasGalleryAccess, setClientListId } from "@/lib/gallery-access";
 import { sendMail } from "@/lib/mail";
 import type { FormState } from "./auth";
@@ -97,12 +98,11 @@ export async function submitFavorites(slug: string) {
 
   const owner = await db.query.users.findFirst({ where: eq(schema.users.id, ctx.project.userId) });
   if (owner) {
-    const appUrl = process.env.APP_URL ?? "http://localhost:3000";
-    await sendMail(
+        await sendMail(
       owner.email,
       `${ctx.list.clientName} выбрал(а) ${n} фото в «${ctx.project.title}»`,
       `${ctx.list.clientName}${ctx.list.clientEmail ? ` (${ctx.list.clientEmail})` : ""} отправил(а) избранное: ${n} фото.\n\n` +
-        `Открыть: ${appUrl}/dashboard/projects/${ctx.project.id}?tab=favorites`,
+        `Открыть: ${appUrl()}/dashboard/projects/${ctx.project.id}?tab=favorites`,
     ).catch((err) => console.error("sendMail failed", err));
   }
   return { ok: true, count: n };

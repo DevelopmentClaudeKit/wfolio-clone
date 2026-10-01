@@ -2,13 +2,13 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import type { Project } from "@/db/schema";
+import { appSecret } from "./env";
 
-const secret = () => process.env.APP_SECRET ?? "dev-secret";
 const cookieName = (projectId: string) => `g_${projectId.replace(/-/g, "")}`;
 
 // The token is bound to the current password hash, so changing the password revokes old access.
 function accessToken(project: Pick<Project, "id" | "passwordHash">) {
-  return createHmac("sha256", secret())
+  return createHmac("sha256", appSecret())
     .update(`${project.id}:${project.passwordHash ?? ""}`)
     .digest("base64url");
 }

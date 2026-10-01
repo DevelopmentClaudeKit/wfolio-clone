@@ -53,12 +53,30 @@ S3_SECRET_ACCESS_KEY=...
 [{ "AllowedOrigins": ["https://your-app.example"], "AllowedMethods": ["PUT", "GET"], "AllowedHeaders": ["*"] }]
 ```
 
+## Деплой на Railway (самый простой способ посмотреть вживую)
+
+Без S3: фото хранятся на диске (volume) Railway.
+
+1. [railway.com](https://railway.com) → **New Project → Deploy from GitHub repo** → `wfolio-clone`.
+2. В проекте **+ Create → Database → PostgreSQL**.
+3. В сервисе приложения → **Variables** добавьте:
+   ```
+   DATABASE_URL=${{Postgres.DATABASE_URL}}
+   APP_SECRET=<любая длинная случайная строка>
+   STORAGE_DRIVER=local
+   LOCAL_STORAGE_DIR=/data
+   ```
+4. Правой кнопкой по сервису приложения → **Attach volume**, путь `/data`.
+5. **Settings → Networking → Generate Domain**. Откройте адрес и зарегистрируйтесь.
+
+Миграции базы применяются автоматически при старте (`npm start`).
+
 ## Скрипты
 
 | Команда | Что делает |
 | --- | --- |
 | `npm run dev` | дев-сервер |
-| `npm run build` / `npm start` | продакшен-сборка и запуск |
+| `npm run build` / `npm start` | продакшен-сборка и запуск (со своими миграциями) |
 | `npm run db:generate` | сгенерировать миграцию после изменения `src/db/schema.ts` |
 | `npm run db:migrate` | применить миграции |
 | `npm test` | юнит-тесты (Vitest) |

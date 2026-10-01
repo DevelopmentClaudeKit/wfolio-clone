@@ -75,7 +75,7 @@ async function FavoritesTab({ projectId }: { projectId: string }) {
     .from(schema.favoriteItems)
     .innerJoin(schema.files, eq(schema.files.id, schema.favoriteItems.fileId))
     .where(inArray(schema.favoriteItems.listId, lists.map((l) => l.id)))
-    .orderBy(asc(schema.files.position));
+    .orderBy(asc(schema.files.position), asc(schema.files.originalName));
 
   return (
     <div className="space-y-6">

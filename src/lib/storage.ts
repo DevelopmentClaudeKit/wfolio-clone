@@ -12,6 +12,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { appSecret } from "./env";
 
 /**
  * Object storage. "s3" works with AWS S3, Cloudflare R2, MinIO and other S3-compatible services;
@@ -113,7 +114,7 @@ export function signLocal(params: Record<string, string>) {
     .sort()
     .map((k) => `${k}=${params[k]}`)
     .join("&");
-  return createHmac("sha256", process.env.APP_SECRET ?? "dev-secret")
+  return createHmac("sha256", appSecret())
     .update(payload)
     .digest("base64url");
 }

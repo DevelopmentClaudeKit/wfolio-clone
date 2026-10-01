@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { db, schema } from "@/db";
 import type { Project } from "@/db/schema";
 import { getCurrentUser } from "./auth";
+import { appUrl } from "./env";
 import { hasGalleryAccess } from "./gallery-access";
 
 export async function getOwnedProject(userId: string, projectId: string) {
@@ -65,4 +66,4 @@ export async function resolveFileAccess(fileId: string) {
 }
 
 export const publicGalleryUrl = (project: Pick<Project, "slug">) =>
-  `${process.env.APP_URL ?? "http://localhost:3000"}/g/${project.slug}`;
+  `${appUrl()}/g/${project.slug}`;

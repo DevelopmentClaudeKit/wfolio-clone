@@ -24,7 +24,7 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/projects/[id]/f
     .innerJoin(schema.files, eq(schema.files.id, schema.favoriteItems.fileId))
     .leftJoin(schema.folders, eq(schema.folders.id, schema.files.folderId))
     .where(eq(schema.favoriteItems.listId, listId))
-    .orderBy(asc(schema.files.position));
+    .orderBy(asc(schema.files.position), asc(schema.files.originalName));
 
   const csv = toCsv([
     ["file_name", "folder", "width", "height", "size_bytes"],
